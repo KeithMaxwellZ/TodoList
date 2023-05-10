@@ -5,6 +5,9 @@ class TodoListModel {
     var eventList: HashMap<String, ArrayList<ListEntry>> = HashMap()
     var count = 0
 
+    var dashboardList: ArrayList<ListEntry> = ArrayList()
+    var dashboardMax: Int = 5
+
     fun addEvent(entry: ListEntry) {
         var dateString = entry.getTime()
         if (this.eventList.containsKey(dateString)) {
@@ -16,12 +19,22 @@ class TodoListModel {
 
         this.eventList[dateString]!!.sortWith(compareBy { it.date.getTime() })
 
-        count += 1
+        this.count += 1
+
+        this.dashboardList.add(entry)
+        this.dashboardList.sortWith(compareBy {it.getDate() + it.getTime()})
+
+        while (this.dashboardList.count() >= dashboardMax) {
+            this.dashboardList.removeAt(this.dashboardList.count() - 1)
+        }
     }
 
     fun removeEvent(entry: ListEntry) {
         var dateString = entry.getTime()
         this.eventList[dateString]?.remove(entry)
+        this.dashboardList.remove(entry)
+
+        count -= 1
     }
 
     fun updateEvent(oldEntry: ListEntry, newEntry: ListEntry) {
