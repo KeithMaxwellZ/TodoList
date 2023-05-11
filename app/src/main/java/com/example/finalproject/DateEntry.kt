@@ -15,7 +15,7 @@ class DateEntry(var year: Int, var month: Int, var day: Int, var hour: Int, var 
     }
 
     fun getDate(): String {
-        return String.format("%d%d%d", year, month, day)
+        return String.format("%d-%d-%d", year, month, day)
     }
 
     fun getTime(): String {

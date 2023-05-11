@@ -7,7 +7,7 @@
     android:layout_gravity="center">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/date_input"
+        android:id="@+id/name_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -18,6 +18,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/name_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Event Name" />
@@ -33,23 +34,25 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/date_input">
+        app:layout_constraintTop_toBottomOf="@+id/name_input_layout">
 
         <TextView
             android:id="@+id/text_selected_date"
-            android:layout_width="220dp"
+            android:layout_width="200dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="30dp"
             android:text="YYYY-MM-DD HH:MM"
             android:gravity="center"
-            android:textSize="22sp" />
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/button_select_date"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginTop="0dp"
-            android:text="Select Date" />
+            android:textSize="12sp"
+            android:text="Select Date"
+            android:onClick="onDateSelectClick"/>
     </LinearLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -70,7 +73,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/description_input"
+        android:id="@+id/description_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -81,6 +84,7 @@
         app:layout_constraintTop_toBottomOf="@+id/location_input">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/description_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Details" />
@@ -94,6 +98,7 @@
         android:text="Save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/description_input" />
+        app:layout_constraintTop_toBottomOf="@+id/description_input_layout"
+        android:onClick="onSaveClick"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,12 +17,12 @@ class TodoListModel {
             this.eventList[dateString]!!.add(entry)
         }
 
-        this.eventList[dateString]!!.sortWith(compareBy { it.date.getTime() })
+        this.eventList[dateString]!!.sortWith(compareByDescending { it.date.getTime() })
 
         this.count += 1
 
         this.dashboardList.add(entry)
-        this.dashboardList.sortWith(compareBy {it.getDate() + it.getTime()})
+        this.dashboardList.sortWith(compareByDescending {it.getDate() + it.getTime()})
 
         while (this.dashboardList.count() > dashboardMax) {
             this.dashboardList.removeAt(this.dashboardList.count() - 1)
