@@ -60,6 +60,7 @@ class EventActivity: AppCompatActivity() {
         finish()
     }
 
+
     fun onDateSelectClick(view: View) {
         val newDatePicker = DatePickerFragment(this)
         val newTimePicker = TimePickerFragment(this)

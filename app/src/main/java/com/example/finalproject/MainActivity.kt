@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -79,6 +80,12 @@ class MainActivity : AppCompatActivity() {
         intent.putExtra("pl", model.dashboardList[0])
 
         startAddEntry.launch(intent)
+    }
+
+
+    fun onCalendarClick(view: View) {
+        val intent: Intent = Intent(this, CalendarActivity::class.java)
+        startActivity(intent)
     }
 
 
