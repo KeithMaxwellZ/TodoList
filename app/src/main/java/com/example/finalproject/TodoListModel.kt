@@ -6,7 +6,7 @@ class TodoListModel {
     var count = 0
 
     var dashboardList: ArrayList<ListEntry> = ArrayList()
-    var dashboardMax: Int = 5
+    var dashboardMax: Int = 8
 
     fun addEvent(entry: ListEntry) {
         var dateString = entry.getTime()
@@ -24,7 +24,7 @@ class TodoListModel {
         this.dashboardList.add(entry)
         this.dashboardList.sortWith(compareBy {it.getDate() + it.getTime()})
 
-        while (this.dashboardList.count() >= dashboardMax) {
+        while (this.dashboardList.count() > dashboardMax) {
             this.dashboardList.removeAt(this.dashboardList.count() - 1)
         }
     }
