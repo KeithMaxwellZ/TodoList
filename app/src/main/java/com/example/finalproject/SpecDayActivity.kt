@@ -87,7 +87,7 @@ class SpecDayActivity: AppCompatActivity() {
         val data = model.getDate(de)
         Log.d("SDA", de.toString())
         Log.d("SDA", data.toString())
-        val adapter = RVAdapter(data!!.toList(), model, sp.edit(), this::refreshData)
+        val adapter = RVAdapter(data!!.toList(), model, sp.edit(), this::refreshData, this)
         recyclerview.adapter = adapter
     }
 }

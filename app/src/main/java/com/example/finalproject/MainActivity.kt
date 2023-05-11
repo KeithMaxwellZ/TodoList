@@ -28,9 +28,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         sp = getSharedPreferences("TODOLIST", Context.MODE_PRIVATE)
-//        val spe = sp.edit()
-//        spe.putString("data", null)
-//        spe.apply()
+        val spe = sp.edit()
+        spe.putString("data", null)
+        spe.apply()
         // Set up recycler view
         recyclerview = findViewById<RecyclerView>(R.id.rv)
         recyclerview.layoutManager = LinearLayoutManager(this)
@@ -92,7 +92,6 @@ class MainActivity : AppCompatActivity() {
         startAddEntry.launch(intent)
     }
 
-
     fun onCalendarClick(item: MenuItem) {
         val intent: Intent = Intent(this, CalendarActivity::class.java)
         intent.putExtra("model", model)
@@ -110,7 +109,7 @@ class MainActivity : AppCompatActivity() {
             model.load(pl)
         }
         val data = model.dashboardList
-        val adapter = RVAdapter(data, model, sp.edit(), this::refreshData)
+        val adapter = RVAdapter(data, model, sp.edit(), this::refreshData, this)
         recyclerview.adapter = adapter
     }
 
@@ -130,6 +129,9 @@ class MainActivity : AppCompatActivity() {
             )
             val ent: ListEntry =
                 ListEntry("Sample Event $i", ts, "Description of e$i")
+            if (i == 5) {
+                ent.setEventLocation("UMD hotel")
+            }
             model.addEvent(ent, sp.edit())
         }
     }

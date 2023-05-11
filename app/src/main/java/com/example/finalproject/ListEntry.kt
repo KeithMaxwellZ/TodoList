@@ -3,6 +3,7 @@ package com.example.finalproject
 import android.location.Location
 import android.os.Parcel
 import android.os.Parcelable
+import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
 
@@ -11,13 +12,13 @@ class ListEntry() : Parcelable {
     lateinit var name: String
     lateinit var date: DateEntry
     lateinit var description: String
-    var location: Location? = null
+    var location: String? = null
 
     constructor(parcel: Parcel) : this() {
         name = parcel.readString().toString()
         description = parcel.readString().toString()
         date = parcel.readParcelable(DateEntry::class.java.classLoader)!!
-        location = parcel.readParcelable(Location::class.java.classLoader)
+        location = parcel.readString()
     }
 
     constructor(name: String, date: DateEntry, description: String) : this() {
@@ -26,7 +27,7 @@ class ListEntry() : Parcelable {
         this.date = date
     }
 
-    fun setEventLocation (loc: Location) {
+    fun setEventLocation (loc: String) {
         this.location = loc
     }
 
@@ -47,6 +48,7 @@ class ListEntry() : Parcelable {
         json.put("name", name)
         json.put("date", date.dump())
         json.put("detail", description)
+        json.put("loc", location)
 
         return json
     }
@@ -57,6 +59,11 @@ class ListEntry() : Parcelable {
         date = DateEntry(0,0,0,0,0)
         date.load(json.getString("date"))
         description = json.getString("detail")
+        location = try {
+            json.getString("loc")
+        } catch (j: JSONException) {
+            null
+        }
     }
 
     override fun toString(): String {
@@ -74,7 +81,7 @@ class ListEntry() : Parcelable {
         parcel.writeString(name)
         parcel.writeString(description)
         parcel.writeParcelable(date, flags)
-        parcel.writeParcelable(location, flags)
+        parcel.writeString(location)
     }
 
     override fun describeContents(): Int {
