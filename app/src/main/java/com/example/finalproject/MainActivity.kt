@@ -4,8 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -18,17 +18,20 @@ class MainActivity : AppCompatActivity() {
     lateinit var drawerLayout: DrawerLayout
     lateinit var drawerToggle: ActionBarDrawerToggle
     lateinit var recyclerview: RecyclerView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        initiateModel()
+
 
         // Set up recycler view
         recyclerview = findViewById<RecyclerView>(R.id.rv)
         recyclerview.layoutManager = LinearLayoutManager(this)
         val data = model.dashboardList
-        val adapter = RVAdapter(data)
+        val adapter = RVAdapter(data, model, this::refreshData)
         recyclerview.adapter = adapter
+
+        supportActionBar?.setIcon(R.drawable.ic_add_sign)
 
         // Set up sidebar
         drawerLayout = findViewById<DrawerLayout>(R.id.my_drawer_layout)
@@ -39,6 +42,13 @@ class MainActivity : AppCompatActivity() {
         drawerToggle.syncState()
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        initiateModel()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.action_bar, menu)
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -55,9 +65,6 @@ class MainActivity : AppCompatActivity() {
             val mode = intent!!.getStringExtra("mode")!!
             val entry: ListEntry = intent.getParcelableExtra("res")!!
 
-            Log.d("MA", entry.toString())
-            Log.d("MA", mode)
-
             if (mode.equals("add")) {
                 model.addEvent(entry)
             } else if (mode.equals("edit")) {
@@ -67,25 +74,30 @@ class MainActivity : AppCompatActivity() {
             }
 
             val data = model.dashboardList
-            val adapter = RVAdapter(data)
+            val adapter = RVAdapter(data, model, this::refreshData)
             recyclerview.adapter = adapter
 
             Log.d("MA", model.toString())
         }
     }
 
-    fun onEventClick(item: MenuItem) {
+    fun onAddClick(item: MenuItem) {
         val intent: Intent = Intent(this, EventActivity::class.java)
         intent.putExtra("mode", "add")
-        intent.putExtra("pl", model.dashboardList[0])
 
         startAddEntry.launch(intent)
     }
 
 
-    fun onCalendarClick(view: View) {
+    fun onCalendarClick(item: MenuItem) {
         val intent: Intent = Intent(this, CalendarActivity::class.java)
         startActivity(intent)
+    }
+
+    fun refreshData() {
+        val data = model.dashboardList
+        val adapter = RVAdapter(data, model, this::refreshData)
+        recyclerview.adapter = adapter
     }
 
 
@@ -99,5 +111,7 @@ class MainActivity : AppCompatActivity() {
             val ent: ListEntry = ListEntry("Event $i", ts, "Description of e$i")
             model.addEvent(ent)
         }
+
+        refreshData()
     }
 }
