@@ -3,6 +3,8 @@ package com.example.finalproject
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.Log
+import org.json.JSONArray
+import org.json.JSONObject
 
 
 class TodoListModel() : Parcelable {
@@ -15,22 +17,69 @@ class TodoListModel() : Parcelable {
     constructor(parcel: Parcel) : this() {
         count = parcel.readInt()
         dashboardMax = parcel.readInt()
-
-        eventList = parcel.readHashMap(ListEntry::class.java.classLoader) as HashMap<String, ArrayList<ListEntry>>
-//        for (i in 0..count - 1) {
-//            var key: String = parcel.readString().toString()
-//            var arr = parcel.readArrayList(ListEntry::class.java.classLoader)
-//            eventList[key] = arr as ArrayList<ListEntry>
-//        }
-        dashboardList = parcel.readArrayList(ListEntry::class.java.classLoader) as ArrayList<ListEntry>
-    }
-
-    fun load() {
-
+        eventList =
+            parcel.readHashMap(ListEntry::class.java.classLoader) as HashMap<String, ArrayList<ListEntry>>
+        dashboardList =
+            parcel.readArrayList(ListEntry::class.java.classLoader) as ArrayList<ListEntry>
     }
 
     fun dump(): String {
-        return ""
+        val json = JSONObject()
+        val tempJson = JSONObject()
+        eventList.forEach() {
+            val key = it.key
+            val value = it.value
+            val tempArr = JSONArray()
+            value.forEach() {it1 ->
+                tempArr.put(it1.dump())
+            }
+            tempJson.put(key, tempArr)
+        }
+        json.put("event_list", tempJson)
+        json.put("count", count)
+        val tempJsonArr = JSONArray()
+        dashboardList.forEach() {
+            tempJsonArr.put(it.dump())
+        }
+        json.put("dashboard_list", tempJsonArr)
+        json.put("dashboard_max", dashboardMax)
+
+
+        val res = json.toString()
+//        Log.d("JS", res)
+        return res
+    }
+
+    fun load(rawString: String) {
+        val json = JSONObject(rawString)
+        Log.d("JS", json.toString())
+
+        val tList = json.getJSONObject("event_list")
+        Log.d("JS", json.toString())
+        eventList.clear()
+        for (i in tList.keys()) {
+            eventList[i] = ArrayList()
+            val temp = tList.getJSONArray(i)
+            for (ind in 0..temp.length() - 1) {
+                val entry = ListEntry()
+                entry.load(temp[ind] as JSONObject)
+                eventList[i]?.add(entry)
+            }
+
+
+
+        }
+
+        count = json.getInt("count")
+        dashboardList = ArrayList()
+        val tarr = json.getJSONArray("dashboard_list")
+        for (i in 0..tarr.length() - 1) {
+            val entry = ListEntry()
+            entry.load(tarr[i] as JSONObject)
+            dashboardList.add(entry)
+        }
+
+        Log.d("JS", this.toString())
     }
 
     fun addEvent(entry: ListEntry) {

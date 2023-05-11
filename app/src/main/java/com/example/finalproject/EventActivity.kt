@@ -81,7 +81,7 @@ class EventActivity: AppCompatActivity() {
     }
 }
 
-class TimePickerFragment(var ac: EventActivity) : DialogFragment(), TimePickerDialog.OnTimeSetListener {
+private class TimePickerFragment(var ac: EventActivity) : DialogFragment(), TimePickerDialog.OnTimeSetListener {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val calendar = Calendar.getInstance()
@@ -101,7 +101,7 @@ class TimePickerFragment(var ac: EventActivity) : DialogFragment(), TimePickerDi
     }
 }
 
-class DatePickerFragment(var ac: EventActivity) : DialogFragment(), DatePickerDialog.OnDateSetListener {
+private class DatePickerFragment(var ac: EventActivity) : DialogFragment(), DatePickerDialog.OnDateSetListener {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val calendar = Calendar.getInstance()
@@ -115,7 +115,7 @@ class DatePickerFragment(var ac: EventActivity) : DialogFragment(), DatePickerDi
 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
         ac.selectYear = year
-        ac.selectMonth = month
+        ac.selectMonth = month + 1
         ac.selectDay = day
 
         ac.refreshDate()

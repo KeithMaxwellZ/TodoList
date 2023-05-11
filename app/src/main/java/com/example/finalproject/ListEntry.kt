@@ -3,7 +3,9 @@ package com.example.finalproject
 import android.location.Location
 import android.os.Parcel
 import android.os.Parcelable
+import org.json.JSONObject
 import java.util.*
+
 
 class ListEntry() : Parcelable {
     lateinit var name: String
@@ -38,6 +40,23 @@ class ListEntry() : Parcelable {
 
     fun getTime():String {
         return this.date.getTime()
+    }
+
+    fun dump(): JSONObject {
+        val json: JSONObject = JSONObject()
+        json.put("name", name)
+        json.put("date", date.dump())
+        json.put("detail", description)
+
+        return json
+    }
+
+    fun load(json: JSONObject) {
+//        val json: JSONObject = JSONObject(rawString)
+        name = json.getString("name")
+        date = DateEntry(0,0,0,0,0)
+        date.load(json.getString("date"))
+        description = json.getString("detail")
     }
 
     override fun toString(): String {

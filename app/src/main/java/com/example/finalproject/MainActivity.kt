@@ -98,6 +98,10 @@ class MainActivity : AppCompatActivity() {
         recyclerview.adapter = adapter
     }
 
+    override fun onResume() {
+        super.onResume()
+        refreshData()
+    }
 
     // ======= For debug use =======
     fun initiateModel() {
@@ -106,9 +110,14 @@ class MainActivity : AppCompatActivity() {
                 2023, 5, 11,
                 (i * i) % 12 + 1, i * 3
             )
-            val ent: ListEntry = ListEntry("Event $i", ts, "Description of e$i")
+            val ent: ListEntry =
+                ListEntry("Sample Event $i", ts, "Description of e$i")
             model.addEvent(ent)
         }
+
+        val res = model.dump()
+//        Log.d("JS", res)
+        model.load(res)
 
         refreshData()
     }
