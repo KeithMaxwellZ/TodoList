@@ -1,13 +1,10 @@
 package com.example.finalproject
 
-import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -49,29 +46,13 @@ class MainActivity : AppCompatActivity() {
         } else super.onOptionsItemSelected(item)
     }
 
-    fun onClick(item: MenuItem) {
-        val intent: Intent = Intent(this, EventActivity::class.java)
-        intent.putExtra("mode", "add")
-        intent.putExtra("pl", model.dashboardList[0])
-
-        startForResult.launch(intent)
-    }
-
-    val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+    val startAddEntry = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
+        Log.d("MA", (result.resultCode == RESULT_OK).toString())
+        if (result.resultCode == RESULT_OK) {
             val intent = result.data
-            // Handle the Intent
-            //do stuff here
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, resIntent: Intent?) {
-        super.onActivityResult(requestCode, resultCode, resIntent)
-        Log.d("MA", (resultCode == RESULT_OK).toString())
-        if (resultCode == RESULT_OK) {
-            val mode = resIntent!!.getStringExtra("mode")!!
-            val entry: ListEntry = resIntent.getParcelableExtra("res")!!
+            val mode = intent!!.getStringExtra("mode")!!
+            val entry: ListEntry = intent.getParcelableExtra("res")!!
 
             Log.d("MA", entry.toString())
             Log.d("MA", mode)
@@ -90,6 +71,14 @@ class MainActivity : AppCompatActivity() {
 
             Log.d("MA", model.toString())
         }
+    }
+
+    fun onEventClick(item: MenuItem) {
+        val intent: Intent = Intent(this, EventActivity::class.java)
+        intent.putExtra("mode", "add")
+        intent.putExtra("pl", model.dashboardList[0])
+
+        startAddEntry.launch(intent)
     }
 
 

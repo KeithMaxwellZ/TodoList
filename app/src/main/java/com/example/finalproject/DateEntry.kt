@@ -11,8 +11,7 @@ class DateEntry(var year: Int, var month: Int, var day: Int, var hour: Int, var 
         parcel.readInt(),
         parcel.readInt(),
         parcel.readInt()
-    ) {
-    }
+    ) {}
 
     fun getDate(): String {
         return String.format("%d-%d-%d", year, month, day)
