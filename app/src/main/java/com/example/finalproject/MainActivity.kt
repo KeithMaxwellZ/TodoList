@@ -1,9 +1,11 @@
 package com.example.finalproject
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,22 +20,21 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         initiateModel()
 
+        // Set up recycler view
         val recyclerview = findViewById<RecyclerView>(R.id.rv)
         recyclerview.layoutManager = LinearLayoutManager(this)
         val data = model.dashboardList
         val adapter = RVAdapter(data)
         recyclerview.adapter = adapter
 
+        // Set up sidebar
         drawerLayout = findViewById<DrawerLayout>(R.id.my_drawer_layout)
         drawerToggle =
             ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close)
 
-        // pass the Open and Close toggle for the drawer layout listener
-        // to toggle the button
         drawerLayout.addDrawerListener(drawerToggle)
         drawerToggle.syncState()
 
-        // to make the Navigation drawer icon always appear on the action bar
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
@@ -51,5 +52,12 @@ class MainActivity : AppCompatActivity() {
             val ent: ListEntry = ListEntry("Event $i", ts, "Description of e$i")
             model.addEvent(ent)
         }
+    }
+
+    fun onClick(item: MenuItem) {
+        val intent: Intent = Intent(this, EventActivity::class.java)
+        intent.putExtra("pl", model.dashboardList[0])
+
+        startActivity(intent)
     }
 }
