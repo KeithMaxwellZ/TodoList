@@ -1,5 +1,6 @@
 package com.example.finalproject
 
+import android.content.SharedPreferences
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.Log
@@ -60,7 +61,7 @@ class TodoListModel() : Parcelable {
         for (i in tList.keys()) {
             eventList[i] = ArrayList()
             val temp = tList.getJSONArray(i)
-            for (ind in 0..temp.length() - 1) {
+            for (ind in 0 until temp.length()) {
                 val entry = ListEntry()
                 entry.load(temp[ind] as JSONObject)
                 eventList[i]?.add(entry)
@@ -73,7 +74,7 @@ class TodoListModel() : Parcelable {
         count = json.getInt("count")
         dashboardList = ArrayList()
         val tarr = json.getJSONArray("dashboard_list")
-        for (i in 0..tarr.length() - 1) {
+        for (i in 0 until tarr.length()) {
             val entry = ListEntry()
             entry.load(tarr[i] as JSONObject)
             dashboardList.add(entry)
@@ -82,7 +83,7 @@ class TodoListModel() : Parcelable {
         Log.d("JS", this.toString())
     }
 
-    fun addEvent(entry: ListEntry) {
+    fun addEvent(entry: ListEntry, editor: SharedPreferences.Editor) {
         var dateString = entry.getDate()
         if (this.eventList.containsKey(dateString)) {
             this.eventList[dateString]!!.add(entry)
@@ -101,19 +102,27 @@ class TodoListModel() : Parcelable {
         while (this.dashboardList.count() > dashboardMax) {
             this.dashboardList.removeAt(this.dashboardList.count() - 1)
         }
+
+        val st = this.dump()
+        Log.d("MA", st)
+        editor.putString("data", this.dump())
+        editor.apply()
     }
 
-    fun removeEvent(entry: ListEntry) {
-        var dateString = entry.getTime()
+    fun removeEvent(entry: ListEntry, editor: SharedPreferences.Editor) {
+        var dateString = entry.getDate()
         this.eventList[dateString]?.remove(entry)
         this.dashboardList.remove(entry)
 
         count -= 1
+
+        editor.putString("data", this.dump())
+        editor.apply()
     }
 
-    fun updateEvent(oldEntry: ListEntry, newEntry: ListEntry) {
-        this.removeEvent(oldEntry)
-        this.addEvent(newEntry)
+    fun updateEvent(oldEntry: ListEntry, newEntry: ListEntry, editor: SharedPreferences.Editor) {
+        this.removeEvent(oldEntry, editor)
+        this.addEvent(newEntry, editor)
     }
 
     fun getDate(date: DateEntry): ArrayList<ListEntry> {

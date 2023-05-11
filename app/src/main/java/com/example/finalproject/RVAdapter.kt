@@ -1,5 +1,6 @@
 package com.example.finalproject
 
+import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,7 +8,8 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class RVAdapter(private val mList: List<ListEntry>, val model: TodoListModel, val refresh: () -> Unit)
+class RVAdapter(private val mList: List<ListEntry>, val model: TodoListModel,
+                val spe: SharedPreferences.Editor, val refresh: () -> Unit)
     : RecyclerView.Adapter<RVAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -24,7 +26,7 @@ class RVAdapter(private val mList: List<ListEntry>, val model: TodoListModel, va
 
         holder.dateText.text = entry.getDate()
         holder.finishBtn.setOnClickListener {
-            model.removeEvent(holder.entry)
+            model.removeEvent(holder.entry, spe)
             refresh()
         }
         holder.entry = entry

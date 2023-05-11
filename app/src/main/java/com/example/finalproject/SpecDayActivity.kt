@@ -1,6 +1,8 @@
 package com.example.finalproject
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -9,7 +11,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -17,6 +18,8 @@ class SpecDayActivity: AppCompatActivity() {
     lateinit var model: TodoListModel
     lateinit var drawerToggle: ActionBarDrawerToggle
     lateinit var recyclerview: RecyclerView
+
+    lateinit var sp: SharedPreferences
 
     var year: Int = 0
     var month: Int = 0
@@ -29,6 +32,7 @@ class SpecDayActivity: AppCompatActivity() {
         month = intent.getIntExtra("month", 1)
         day = intent.getIntExtra("day", 1)
 
+        sp = getSharedPreferences("TODOLIST", Context.MODE_PRIVATE)
 
         this.model = intent.getParcelableExtra("model")!!
         // Set up recycler view
@@ -58,9 +62,9 @@ class SpecDayActivity: AppCompatActivity() {
             val entry: ListEntry = intent.getParcelableExtra("res")!!
 
             if (mode.equals("add")) {
-                model.addEvent(entry)
+                model.addEvent(entry, sp.edit())
             } else if (mode.equals("edit")) {
-                model.addEvent(entry)
+                model.addEvent(entry, sp.edit())
             } else {
                 throw Exception("Unknown return mode")
             }
@@ -83,7 +87,7 @@ class SpecDayActivity: AppCompatActivity() {
         val data = model.getDate(de)
         Log.d("SDA", de.toString())
         Log.d("SDA", data.toString())
-        val adapter = RVAdapter(data!!.toList(), model, this::refreshData)
+        val adapter = RVAdapter(data!!.toList(), model, sp.edit(), this::refreshData)
         recyclerview.adapter = adapter
     }
 }

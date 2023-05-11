@@ -81,7 +81,7 @@ class EventActivity: AppCompatActivity() {
     }
 }
 
-private class TimePickerFragment(var ac: EventActivity) : DialogFragment(), TimePickerDialog.OnTimeSetListener {
+class TimePickerFragment(var ac: EventActivity) : DialogFragment(), TimePickerDialog.OnTimeSetListener {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val calendar = Calendar.getInstance()
@@ -101,7 +101,7 @@ private class TimePickerFragment(var ac: EventActivity) : DialogFragment(), Time
     }
 }
 
-private class DatePickerFragment(var ac: EventActivity) : DialogFragment(), DatePickerDialog.OnDateSetListener {
+class DatePickerFragment(var ac: EventActivity) : DialogFragment(), DatePickerDialog.OnDateSetListener {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val calendar = Calendar.getInstance()

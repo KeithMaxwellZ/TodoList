@@ -63,6 +63,13 @@ class ListEntry() : Parcelable {
         return "$name - $date - $description"
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (other != null && other.javaClass == this.javaClass) {
+            return (other as ListEntry).name == this.name
+        }
+        return false
+    }
+
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(name)
         parcel.writeString(description)

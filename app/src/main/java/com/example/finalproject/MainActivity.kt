@@ -1,6 +1,8 @@
 package com.example.finalproject
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -19,14 +21,20 @@ class MainActivity : AppCompatActivity() {
     lateinit var drawerToggle: ActionBarDrawerToggle
     lateinit var recyclerview: RecyclerView
 
+    lateinit var sp: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
+        sp = getSharedPreferences("TODOLIST", Context.MODE_PRIVATE)
+//        val spe = sp.edit()
+//        spe.putString("data", null)
+//        spe.apply()
         // Set up recycler view
         recyclerview = findViewById<RecyclerView>(R.id.rv)
         recyclerview.layoutManager = LinearLayoutManager(this)
+        Log.d("MA", "calling refresh")
         refreshData()
 
         supportActionBar?.setIcon(R.drawable.ic_add_sign)
@@ -41,7 +49,7 @@ class MainActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        initiateModel()
+//        initiateModel()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -64,9 +72,9 @@ class MainActivity : AppCompatActivity() {
             val entry: ListEntry = intent.getParcelableExtra("res")!!
 
             if (mode.equals("add")) {
-                model.addEvent(entry)
+                model.addEvent(entry, sp.edit())
             } else if (mode.equals("edit")) {
-                model.addEvent(entry)
+                model.addEvent(entry, sp.edit())
             } else {
                 throw Exception("Unknown return mode")
             }
@@ -93,18 +101,28 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun refreshData() {
+        val pl = sp.getString("data", null)
+        Log.d("MA", pl.toString())
+        if (pl == null) {
+            Log.d("MA", "refreshing")
+            initiateModel()
+        } else {
+            model.load(pl)
+        }
         val data = model.dashboardList
-        val adapter = RVAdapter(data, model, this::refreshData)
+        val adapter = RVAdapter(data, model, sp.edit(), this::refreshData)
         recyclerview.adapter = adapter
     }
 
     override fun onResume() {
         super.onResume()
+        Log.d("MA", "refresh data")
         refreshData()
     }
 
     // ======= For debug use =======
     fun initiateModel() {
+        Log.d("MA", "re_initiated")
         for (i in 1..5) {
             val ts: DateEntry = DateEntry(
                 2023, 5, 11,
@@ -112,13 +130,7 @@ class MainActivity : AppCompatActivity() {
             )
             val ent: ListEntry =
                 ListEntry("Sample Event $i", ts, "Description of e$i")
-            model.addEvent(ent)
+            model.addEvent(ent, sp.edit())
         }
-
-        val res = model.dump()
-//        Log.d("JS", res)
-        model.load(res)
-
-        refreshData()
     }
 }
