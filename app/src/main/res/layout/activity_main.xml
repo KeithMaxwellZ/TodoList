@@ -20,11 +20,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:itemCount="10"
-            tools:listitem="@layout/cardview" />
+            tools:listitem="@layout/card_view" />
     </LinearLayout>
 
-    <!-- this the navigation view which draws and shows the navigation drawer -->
-    <!-- include the menu created in the menu folder -->
     <com.google.android.material.navigation.NavigationView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

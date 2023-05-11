@@ -18,11 +18,11 @@ class DateEntry(var year: Int, var month: Int, var day: Int, var hour: Int, var 
     }
 
     fun getTime(): String {
-        return String.format("%02d%d", hour, minute)
+        return String.format("%02d%02d", hour, minute)
     }
 
     override fun toString(): String {
-        return String.format("%d-%d-%d | %02d:%d",
+        return String.format("%d-%d-%d | %02d:%02d",
             year, month, day, hour, minute)
     }
 

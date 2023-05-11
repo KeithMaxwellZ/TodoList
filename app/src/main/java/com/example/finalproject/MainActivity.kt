@@ -27,9 +27,7 @@ class MainActivity : AppCompatActivity() {
         // Set up recycler view
         recyclerview = findViewById<RecyclerView>(R.id.rv)
         recyclerview.layoutManager = LinearLayoutManager(this)
-        val data = model.dashboardList
-        val adapter = RVAdapter(data, model, this::refreshData)
-        recyclerview.adapter = adapter
+        refreshData()
 
         supportActionBar?.setIcon(R.drawable.ic_add_sign)
 
@@ -73,9 +71,7 @@ class MainActivity : AppCompatActivity() {
                 throw Exception("Unknown return mode")
             }
 
-            val data = model.dashboardList
-            val adapter = RVAdapter(data, model, this::refreshData)
-            recyclerview.adapter = adapter
+            refreshData()
 
             Log.d("MA", model.toString())
         }
@@ -91,6 +87,8 @@ class MainActivity : AppCompatActivity() {
 
     fun onCalendarClick(item: MenuItem) {
         val intent: Intent = Intent(this, CalendarActivity::class.java)
+        intent.putExtra("model", model)
+        Log.d("MA", model.toString())
         startActivity(intent)
     }
 
@@ -105,7 +103,7 @@ class MainActivity : AppCompatActivity() {
     fun initiateModel() {
         for (i in 1..5) {
             val ts: DateEntry = DateEntry(
-                2010 + i, 1 + i, 10 + i,
+                2023, 5, 11,
                 (i * i) % 12 + 1, i * 3
             )
             val ent: ListEntry = ListEntry("Event $i", ts, "Description of e$i")
