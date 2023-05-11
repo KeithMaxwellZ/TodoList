@@ -28,11 +28,7 @@ class EventActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_event)
 
-        var entry: ListEntry = intent.getParcelableExtra("pl")!!
         mode = intent.getStringExtra("mode").toString()
-
-        Log.d("EA", entry.toString())
-        Log.d("EA", entry.name)
     }
 
     fun onSaveClick(view: View) {
