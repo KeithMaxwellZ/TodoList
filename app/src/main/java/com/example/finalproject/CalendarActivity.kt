@@ -6,7 +6,11 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.CalendarView
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import java.time.Year
 import java.time.YearMonth
 
@@ -33,6 +37,30 @@ class CalendarActivity : AppCompatActivity()  {
             this.month = month + 1
             this.day = day
         })
+
+        // build the Adview
+        var adView: AdView = AdView( this )
+        var adSize : AdSize = AdSize( AdSize.FULL_WIDTH, AdSize.AUTO_HEIGHT )
+        adView.setAdSize( adSize )
+        var adUnitId : String = "ca-app-pub-3940256099942544/6300978111"
+        adView.adUnitId = adUnitId
+
+        // build the AdRequest
+        var builder : AdRequest.Builder = AdRequest.Builder( )
+        builder.addKeyword( "workout" )
+        builder.addKeyword( "fitness" )
+        var request : AdRequest = builder.build()
+
+        // add adView to LinearLayout
+        var adLayout : LinearLayout = findViewById<LinearLayout>( R.id.ad_view )
+        adLayout.addView( adView )
+
+        // load the ad
+        try {
+            adView.loadAd( request )
+        } catch( e : Exception ) {
+            Log.w( "MainActivity", "Ad failed tom load" )
+        }
     }
 
     fun onReturnClick(view: View) {
