@@ -24,11 +24,31 @@ class EventActivity: AppCompatActivity() {
     var selectDay: Int = 0
     var selectHour: Int = 0
     var selectMinute: Int = 0
+
+    lateinit var old: ListEntry
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_event)
 
         mode = intent.getStringExtra("mode").toString()
+
+        if (mode == "add") {
+            // pass
+        } else if (mode == "edit") {
+            val ent: ListEntry = intent.getParcelableExtra("payload")!!
+            old = ent
+            val edit_name = findViewById<EditText>(R.id.name_input)
+            val text_detail = findViewById<EditText>(R.id.description_input)
+            val time_disp = findViewById<TextView>(R.id.text_selected_date)
+            val location_text = findViewById<EditText>(R.id.location_input)
+
+            edit_name.setText(ent.name)
+            text_detail.setText(ent.description)
+            time_disp.text = "${ent.date.year}-${ent.date.month}-${ent.date.day} ${ent.date.hour}:${ent.date.minute}"
+            location_text.setText(ent.location)
+        } else {
+            throw Exception("Unknown mode")
+        }
     }
 
     fun onSaveClick(view: View) {
@@ -38,10 +58,21 @@ class EventActivity: AppCompatActivity() {
         if (edit_name.text.isEmpty()) {
             val t = Toast.makeText(this, "Please enter a name", Toast.LENGTH_LONG)
             t.show()
+            return
         }
         if (!validateDate()) {
-            val t = Toast.makeText(this, "Please select a time", Toast.LENGTH_LONG)
-            t.show()
+            if (mode == "edit") {
+                selectYear = old.date.year
+                selectMonth = old.date.month
+                selectDay = old.date.day
+                selectHour = old.date.hour
+                selectMinute = old.date.minute
+            } else {
+                val t = Toast.makeText(this, "Please select a time", Toast.LENGTH_LONG)
+                t.show()
+                return
+            }
+
         }
 
         val name = edit_name.text.toString()
@@ -50,9 +81,13 @@ class EventActivity: AppCompatActivity() {
         val le: ListEntry = ListEntry(name, de, description)
 
         Log.d("EA", mode)
+        intent.putExtra("success", true)
+        if (mode == "edit") {
+            intent.putExtra("old", old)
+        }
         intent.putExtra("mode", mode)
         intent.putExtra("res", le)
-        setResult(RESULT_OK, intent)
+        setResult(0, intent)
         finish()
     }
 

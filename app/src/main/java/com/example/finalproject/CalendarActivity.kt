@@ -11,8 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
-import java.time.Year
-import java.time.YearMonth
 
 class CalendarActivity : AppCompatActivity()  {
     var year = 1
@@ -39,27 +37,24 @@ class CalendarActivity : AppCompatActivity()  {
         })
 
         // build the Adview
-        var adView: AdView = AdView( this )
-        var adSize : AdSize = AdSize( AdSize.FULL_WIDTH, AdSize.AUTO_HEIGHT )
-        adView.setAdSize( adSize )
-        var adUnitId : String = "ca-app-pub-3940256099942544/6300978111"
-        adView.adUnitId = adUnitId
+        var adv = AdView( this )
+        adv.setAdSize( AdSize.FULL_BANNER )
+        val adUnitId = "ca-app-pub-3940256099942544/6300978111"
+//        val adUnitId = "ca-app-pub-6092815415834029/4055238346"
+        adv.adUnitId = adUnitId
 
-        // build the AdRequest
         var builder : AdRequest.Builder = AdRequest.Builder( )
         builder.addKeyword( "workout" )
         builder.addKeyword( "fitness" )
-        var request : AdRequest = builder.build()
+        var request = builder.build()
 
-        // add adView to LinearLayout
         var adLayout : LinearLayout = findViewById<LinearLayout>( R.id.ad_view )
-        adLayout.addView( adView )
+        adLayout.addView( adv )
 
-        // load the ad
         try {
-            adView.loadAd( request )
+            adv.loadAd( request )
         } catch( e : Exception ) {
-            Log.w( "MainActivity", "Ad failed tom load" )
+            Log.w( "MA", "Ad failed tom load" )
         }
     }
 

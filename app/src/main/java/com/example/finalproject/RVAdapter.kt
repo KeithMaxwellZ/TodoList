@@ -1,19 +1,25 @@
 package com.example.finalproject
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 
 class RVAdapter(private val mList: List<ListEntry>, val model: TodoListModel,
-                val spe: SharedPreferences.Editor, val refresh: () -> Unit, val context: Context)
+                val spe: SharedPreferences.Editor, val refresh: () -> Unit, val ac: Activity
+)
     : RecyclerView.Adapter<RVAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -40,7 +46,16 @@ class RVAdapter(private val mList: List<ListEntry>, val model: TodoListModel,
             val gmmIntentUri = Uri.parse("geo:0,0?q=${entry.location}")
             val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
             mapIntent.setPackage("com.google.android.apps.maps")
-            startActivity(context, mapIntent, null)
+            startActivity(ac, mapIntent, null)
+        }
+        holder.card.setOnLongClickListener {
+            Log.d("RVA","Long Pressed")
+            val intent = Intent(ac, EventActivity::class.java)
+            intent.putExtra("mode", "edit")
+            intent.putExtra("payload", entry)
+            startActivityForResult(ac, intent, 0, null)
+//            startActivity(context, intent, null)
+            return@setOnLongClickListener true
         }
         holder.entry = entry
     }
@@ -50,6 +65,7 @@ class RVAdapter(private val mList: List<ListEntry>, val model: TodoListModel,
     }
 
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
+        val card: RelativeLayout = itemView.findViewById(R.id.card)
         val titleText: TextView = itemView.findViewById(R.id.cardTitle)
         val dateText: TextView = itemView.findViewById(R.id.cardTime)
         val finishBtn: Button = itemView.findViewById(R.id.finish_btn)

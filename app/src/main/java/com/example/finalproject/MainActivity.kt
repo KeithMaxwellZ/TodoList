@@ -14,6 +14,9 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 
 class MainActivity : AppCompatActivity() {
     val model: TodoListModel = TodoListModel()
@@ -28,9 +31,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         sp = getSharedPreferences("TODOLIST", Context.MODE_PRIVATE)
-        val spe = sp.edit()
-        spe.putString("data", null)
-        spe.apply()
+
         // Set up recycler view
         recyclerview = findViewById<RecyclerView>(R.id.rv)
         recyclerview.layoutManager = LinearLayoutManager(this)
@@ -48,8 +49,6 @@ class MainActivity : AppCompatActivity() {
         drawerToggle.syncState()
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-//        initiateModel()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -63,25 +62,26 @@ class MainActivity : AppCompatActivity() {
         } else super.onOptionsItemSelected(item)
     }
 
-    val startAddEntry = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            result: ActivityResult ->
-        Log.d("MA", (result.resultCode == RESULT_OK).toString())
-        if (result.resultCode == RESULT_OK) {
-            val intent = result.data
-            val mode = intent!!.getStringExtra("mode")!!
-            val entry: ListEntry = intent.getParcelableExtra("res")!!
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intent)
+        Log.d("MA", resultCode.toString())
+        if (intent != null) {
+            if (resultCode == 0 && intent.getBooleanExtra("success", false)) {
+                val mode = intent.getStringExtra("mode")!!
+                val entry: ListEntry = intent.getParcelableExtra("res")!!
 
-            if (mode.equals("add")) {
-                model.addEvent(entry, sp.edit())
-            } else if (mode.equals("edit")) {
-                model.addEvent(entry, sp.edit())
-            } else {
-                throw Exception("Unknown return mode")
+                if (mode == "add") {
+                    model.addEvent(entry, sp.edit())
+                } else if (mode == "edit") {
+                    val old: ListEntry = intent.getParcelableExtra("old")!!
+                    val new: ListEntry = intent.getParcelableExtra("res")!!
+                    model.updateEvent(old, new, sp.edit())
+                } else {
+                    throw Exception("Unknown return mode")
+                }
+
+                refreshData()
             }
-
-            refreshData()
-
-            Log.d("MA", model.toString())
         }
     }
 
@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
         val intent: Intent = Intent(this, EventActivity::class.java)
         intent.putExtra("mode", "add")
 
-        startAddEntry.launch(intent)
+        startActivityForResult(intent, 0)
     }
 
     fun onCalendarClick(item: MenuItem) {
@@ -97,6 +97,12 @@ class MainActivity : AppCompatActivity() {
         intent.putExtra("model", model)
         Log.d("MA", model.toString())
         startActivity(intent)
+    }
+
+    fun onResetClick(item: MenuItem) {
+        val spe = sp.edit()
+        spe.putString("data", null)
+        spe.apply()
     }
 
     fun refreshData() {
