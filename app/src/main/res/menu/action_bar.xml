@@ -2,8 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:title="reset"
+        android:id="@+id/reset_btn"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_reset_btn"
+        android:onClick="onResetClick"/>
+    <item
         android:title="add"
-        android:id="@+id/search"
+        android:id="@+id/add_btn"
         android:orderInCategory="100"
         app:showAsAction="always"
         android:icon="@drawable/ic_add_sign"

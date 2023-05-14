@@ -75,6 +75,9 @@ class SpecDayActivity: AppCompatActivity() {
         }
     }
 
+    fun onResetClick(item: MenuItem) {
+
+    }
     fun onAddClick(item: MenuItem) {
         val intent: Intent = Intent(this, EventActivity::class.java)
         intent.putExtra("mode", "add")

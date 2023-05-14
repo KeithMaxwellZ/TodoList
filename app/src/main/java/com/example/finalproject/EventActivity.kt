@@ -44,7 +44,8 @@ class EventActivity: AppCompatActivity() {
 
             edit_name.setText(ent.name)
             text_detail.setText(ent.description)
-            time_disp.text = "${ent.date.year}-${ent.date.month}-${ent.date.day} ${ent.date.hour}:${ent.date.minute}"
+            time_disp.text = "${ent.date.year}-${ent.date.month}-${ent.date.day} " +
+                    "${String.format("%02d", ent.date.hour)}:${String.format("%02d", ent.date.minute)}"
             location_text.setText(ent.location)
         } else {
             throw Exception("Unknown mode")
@@ -80,6 +81,13 @@ class EventActivity: AppCompatActivity() {
         val description = text_detail.text.toString()
         val le: ListEntry = ListEntry(name, de, description)
 
+        val loc_text = findViewById<EditText>(R.id.location_input)
+        val loc: String = loc_text.text.toString()
+
+        if (loc != null && loc != "") {
+            le.setEventLocation(loc)
+        }
+
         Log.d("EA", mode)
         intent.putExtra("success", true)
         if (mode == "edit") {
@@ -103,7 +111,8 @@ class EventActivity: AppCompatActivity() {
     fun refreshDate() {
         if (validateDate()) {
             val text_date = findViewById<TextView>(R.id.text_selected_date)
-            text_date.text = "$selectYear-$selectMonth-$selectDay $selectHour:$selectMinute"
+            text_date.text = "$selectYear-$selectMonth-$selectDay " +
+                    "${String.format("%02d", selectHour)}:${String.format("%02d", selectMinute)}"
         }
     }
 
@@ -132,6 +141,8 @@ class TimePickerFragment(var ac: EventActivity) : DialogFragment(), TimePickerDi
         ac.selectHour = hourOfDay
         ac.selectMinute = minute
 
+        Log.d("EA", ac.selectHour.toString())
+        Log.d("EA", ac.selectMinute.toString())
         ac.refreshDate()
     }
 }
@@ -153,6 +164,9 @@ class DatePickerFragment(var ac: EventActivity) : DialogFragment(), DatePickerDi
         ac.selectMonth = month + 1
         ac.selectDay = day
 
+        Log.d("EA", ac.selectYear.toString())
+        Log.d("EA", ac.selectMonth.toString())
+        Log.d("EA", ac.selectDay.toString())
         ac.refreshDate()
     }
 }

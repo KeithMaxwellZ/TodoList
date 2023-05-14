@@ -54,7 +54,6 @@ class RVAdapter(private val mList: List<ListEntry>, val model: TodoListModel,
             intent.putExtra("mode", "edit")
             intent.putExtra("payload", entry)
             startActivityForResult(ac, intent, 0, null)
-//            startActivity(context, intent, null)
             return@setOnLongClickListener true
         }
         holder.entry = entry

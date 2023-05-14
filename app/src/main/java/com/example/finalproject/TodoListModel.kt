@@ -153,10 +153,6 @@ class TodoListModel() : Parcelable {
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(count)
         parcel.writeInt(dashboardMax)
-//        eventList.forEach() {
-//            parcel.writeString(it.key)
-//            parcel.writeList(it.value)
-//        }
         parcel.writeMap(eventList)
         parcel.writeList(dashboardList)
     }
